@@ -1,15 +1,8 @@
-
 class Solution:
     def combinationSum(self, nums: List[int], target: int) -> List[List[int]]:
         res = []
         visited = set()
-        queue = collections.deque([])
-        
-        for i in range(len(nums)):
-            count = [0] * len(nums)
-            count[i] += 1
-            queue.append(count)
-        
+        queue = collections.deque([[0] * len(nums)])
 
         while queue:
             count = queue.popleft()
@@ -33,3 +26,4 @@ class Solution:
                     queue.append(new_count)
 
         return res
+
