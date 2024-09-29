@@ -1,25 +1,15 @@
 class Solution:
     def combinationSum(self, nums: List[int], target: int) -> List[List[int]]:
         res = []
-        visited = set()
-        queue = collections.deque([([0] * len(nums), 0)])
 
-        while queue:
-            count, total = queue.popleft()
-            # a result
-            if total == target and tuple(count) not in visited:
-                result = []
-                for i in range(len(count)):
-                    for _ in range(count[i]):
-                        result.append(nums[i])
-                res.append(result)
-                visited.add(tuple(count))
-            # not yet reached result
-            elif total <= target:
-                for i in range(len(nums)):
-                    new_count = count.copy()
-                    new_count[i] += 1
-                    queue.append((new_count, total + nums[i]))
-
+        def dfs(i, comb, total):
+            if total == target:
+                res.append(comb)
+                return
+            if i == len(nums) or total > target:
+                return
+            dfs(i, comb + [nums[i]], total + nums[i])
+            dfs(i + 1, comb, total)
+        
+        dfs(0, [], 0)
         return res
-
