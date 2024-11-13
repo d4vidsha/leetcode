@@ -13,13 +13,12 @@ class Solution:
             if adjList[course] == []:
                 return True
             visited.add(course)
-            newList = []
             for c in adjList[course]:
                 if dfs(c) == False:
-                    newList.append(c)
+                    return False
             visited.remove(course)
-            adjList[course] = newList 
-            return newList == []
+            adjList[course] = [] 
+            return True
         for course in range(numCourses):
             if not dfs(course):
                 return False
