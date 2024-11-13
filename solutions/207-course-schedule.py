@@ -1,25 +1,24 @@
+from collections import deque
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        adjList = {}
+        indegree = [0] * numCourses
+        adj = [[] for _ in range(numCourses)]
+        for course, prereq in prerequisites:
+            indegree[prereq] += 1
+            adj[course].append(prereq)
+
+        q = deque()
         for course in range(numCourses):
-            adjList[course] = []
-        for fromSubj, toSubj in prerequisites:
-            adjList[fromSubj].append(toSubj)
-        visited = set()
-        def dfs(course):
-            if course in visited:
-                # this is a cycle
-                return False
-            if adjList[course] == []:
-                return True
-            visited.add(course)
-            for c in adjList[course]:
-                if dfs(c) == False:
-                    return False
-            visited.remove(course)
-            adjList[course] = [] 
-            return True
-        for course in range(numCourses):
-            if not dfs(course):
-                return False
-        return True
+            if indegree[course] == 0:
+                q.append(course)
+        finish = 0
+        while q:
+            course = q.popleft()
+            finish += 1
+            for prereq in adj[course]:
+                indegree[prereq] -= 1
+                if indegree[prereq] == 0:
+                    q.append(prereq)
+
+        return finish == numCourses
+
