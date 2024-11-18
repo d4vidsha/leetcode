@@ -1,34 +1,26 @@
 class Solution:
     def countComponents(self, n: int, edges: List[List[int]]) -> int:
-        adj = [[] for _ in range(n)]
+        par = [i for i in range(n)]
+        rank = [1] * n
+        numUnions = 0
+        def union(n1, n2):
+            nonlocal numUnions
+            r1 = find(n1)
+            r2 = find(n2)
+            if r1 != r2:
+                if rank[r1] < rank[r2]:
+                    r1, r2 = r2, r1
+                numUnions += 1
+                par[r2] = r1
+                rank[r1] += 1
+            return
+
+        def find(node):
+            while node != par[node]:
+                node = par[node]
+            return node
+
         for n1, n2 in edges:
-            adj[n1].append(n2)
-            adj[n2].append(n1)
-        visited = set()
-        res = 0
-        def dfs(node, prev):
-            visited.add(node)
-            for n in adj[node]:
-                if prev == n:
-                    continue
-                if n in visited:
-                    continue
-                dfs(n, node)
-        def bfs(node):
-            q = collections.deque([(node, None)])
-            while q:
-                node, prev = q.popleft()
-                visited.add(node)
-                for n in adj[node]:
-                    if prev == n:
-                        continue
-                    if n in visited:
-                        continue
-                    q.append((n, node))
-        for node in range(n):
-            if node in visited:
-                continue
-            res += 1
-            # dfs(node, None)
-            bfs(node)
-        return res
+            union(n1, n2)
+        return n - numUnions
+
